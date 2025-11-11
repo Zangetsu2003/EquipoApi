@@ -8,14 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var pokemonList = PokemonListViewModel()
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("\(pokemonList.pokemon.count)")
+            Text(pokemonList.pokemon.next)
+            Text(pokemonList.pokemon.previous ?? "")
+            
+            List(){
+                ForEach(pokemonList.pokemon.results, id: \.self){  pokemon in
+                    VStack{
+                        Text(pokemon.name)
+                        AsyncImage(url: URL(string: pokemon.url))
+                    }
+                }
+            }
+            
         }
         .padding()
+        .onAppear(){
+            pokemonList.getPokemonList()
+        }
     }
 }
 
